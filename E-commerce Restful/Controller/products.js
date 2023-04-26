@@ -4,6 +4,7 @@ const app = express();
 const bodyParser = require("body-parser");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.set("view engine", "ejs");
 
 const pool = new Pool({
   user: process.env.USER,
@@ -19,7 +20,8 @@ const getProductById = (req, res) => {
     if (error) {
       throw error;
     }
-    res.status(200).json(results.rows);
+    const products = results.rows;
+    res.render("products", { products: products });
   });
 };
 
@@ -28,7 +30,8 @@ const getAllProducts = (req, res) => {
     if (error) {
       throw error;
     }
-    res.status(200).json(results.rows);
+    const products = results.rows;
+    res.render("allProducts", { products: products });
   });
 };
 
@@ -41,7 +44,8 @@ const createProduct = (req, res) => {
       if (error) {
         throw error;
       }
-      res.status(201).json(results.rows);
+      const products = results.rows;
+      res.render("products", { products: products });
     }
   );
 };
@@ -70,10 +74,15 @@ const deleteProduct = (req, res) => {
     res.status(200).json(results.rows);
   });
 };
+const getAddPage = (req, res) => {
+  res.render("addProduct");
+};
+
 module.exports = {
   updateProduct,
   deleteProduct,
   createProduct,
   getAllProducts,
   getProductById,
+  getAddPage,
 };

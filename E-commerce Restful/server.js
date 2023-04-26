@@ -2,7 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const session = require("express-session");
-const db = require("./data");
+const db = require("./Controller/products");
 const du = require("./users");
 const bodyParser = require("body-parser");
 const passport = require("passport");
@@ -44,11 +44,14 @@ app.post("/users", du.createUser);
 
 app.route("/product").get(db.getAllProducts).post(db.createProduct);
 
+app.get("/product/:id", db.getProductById);
+
 app
-  .route("/product/:id")
-  .get(db.getProductById)
+  .route("/admin/product")
+  .get(db.getAddPage)
   .put(db.updateProduct)
-  .delete(db.deleteProduct);
+  .delete(db.deleteProduct)
+  .post(db.createProduct);
 
 app.listen(process.env.PORT, () => {
   console.log(`server started on ${PORT}`);
