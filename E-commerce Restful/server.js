@@ -34,13 +34,22 @@ app.get("/", (req, res) => {
   res.send("hi");
 });
 
-app.post(
-  ["/login", "/users/:id"],
-  passport.authenticate("local", { failureRedirect: "/product" }),
-  du.getUserById
-);
+app
+  .route(["/users/login", "/users/:id"])
+  .post(
+    passport.authenticate("local", { failureRedirect: "/product" }),
+    du.getUserById
+  )
+  .get((req, res) => {
+    res.render("login");
+  });
 
-app.post("/users", du.createUser);
+app
+  .route("/users")
+  .get((req, res) => {
+    res.render("register");
+  })
+  .post(du.createUser);
 
 app.route("/product").get(db.getAllProducts).post(db.createProduct);
 
