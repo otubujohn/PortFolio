@@ -5,31 +5,35 @@ const bcrypt = require("bcrypt");
 const db = require("./Controller/adminController");
 const du = require("./Controller/userControls");
 const passport = require("passport");
-const route = express.Router();
 const router = express.Router();
 const cart = require("./Controller/cartController");
 
 // passport local strategy setup
 passport.use(
-  new LocalStrategy((username, password, done) => {
-    const user = du.findByUsername(username);
-    // return error if an error found
-    if (err) {
+  new LocalStrategy(
+    { usernameField: "username", passwordField: "password" },
+    async (username, password, done) => {
+      const user = await du.findByUsername(username);
+      // return error if an errors found
+      /*if (err) {
       return done(err);
-    }
-    // if user does not exist
-    if (!user) {
-      return done(null, false, { message: "user does not exist" });
-    }
+    }*/
+      // if user does not exist
+      if (!user) {
+        console.log("user does not exist");
+        return done(null, false, { message: "user does not exist" });
+      }
 
-    // use bcrypt to compare passwords
-    const match = bcrypt.compare(password, user[0].pword);
-    if (!match) {
-      return done(null, false, { message: "Incorrect password" });
+      // use bcrypt to compare passwords
+      const match = await bcrypt.compare(password, user.pword);
+      if (!match) {
+        console.log("Incorrect password");
+        return done(null, false, { message: "Incorrect password" });
+      }
+      console.log("success");
+      return done(null, user);
     }
-    console.log("success");
-    return done(null, user);
-  })
+  )
 );
 
 passport.serializeUser((user, done) => {
@@ -46,6 +50,7 @@ passport.deserializeUser((id, done) => {
 // ROUTES
 
 router.get("/", db.getAllProducts);
+
 router.post(
   ["/users/login", "/users/:id"],
   passport.authenticate("local", {
@@ -55,6 +60,7 @@ router.post(
   // redirect to see all prdoucts upon login
   db.getAllProducts
 );
+/**/
 
 // The app breaks when tis code is uncommented
 // router.post("/addtocart", cart.addToCart);

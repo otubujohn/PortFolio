@@ -3,9 +3,8 @@ const bcrypt = require("bcrypt");
 const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
-app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
+app.use(bodyParser.json());
 const pool = new Pool({
   user: process.env.USER,
   host: process.env.HOST,
@@ -13,6 +12,20 @@ const pool = new Pool({
   password: "1970520",
   port: process.env.PGPORT,
 });
+
+const findByUsername = async (name) => {
+  // const username = req.body.username;
+  pool.query(
+    "SELECT * FROM users WHERE username = $1",
+    [name],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+      return results.rows[0];
+    }
+  );
+};
 
 const getUserById = (req, res) => {
   const id = parseInt(req.params.id);
@@ -59,19 +72,6 @@ const createUser = async (req, res) => {
         throw error;
       }
       res.redirect("/users/login");
-    }
-  );
-};
-
-const findByUsername = (name) => {
-  pool.query(
-    "SELECT * FROM users WHERE username = $1",
-    [name],
-    (error, results) => {
-      if (error) {
-        throw error;
-      }
-      return results.rows[0].username;
     }
   );
 };
