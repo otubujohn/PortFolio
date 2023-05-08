@@ -17,17 +17,52 @@ const pool = new Pool({
 // Also i am out of ideas how to implelmet increasing the quantity of products when same product is added to cart
 
 const addToCart = (req, res) => {
-  const getInitalCart = "SELECT * FROM initial-carts WHERE ID = $1";
-  let bag;
-  if (req.user) {
-    // get items from the inital cart when user was a guest
-    pool.query(getInitalCart, [session_id], (error, results) => {
+  return new Promise ((res, rej)=>{
+    if(req.user){
+    pool.query("SELECT * FROM initial-carts WHERE ID = $1", [req.sessionID], (error, results) => {
       if (error) {
         console.log(error);
       }
-      bag = results.rows;
+       res(results.rows);
+       rej(error);
+  })
+}
+ }).then(results=>{
+  if (bag.length > 0) {
+    //use a proper for loop s that the thread is held
+    for (let i = 0; i<bag.length; i++){
+      pool.query(
+        "INSERT INTO final-carts (product_name, product_id, user_id, product_price) VALUES ($1, $2, $3, $4)",
+        [
+          bag[1].product_name,
+          bag[1].product_id,
+          bag[1].user_id,
+          bag[1].product_price,
+        ], (error, secondresults)=>{
+          if(error) return error;
+
+          return secondresults.rows
+        })
+    }}}) 
+
+
+
+
+    // get items from the inital cart when user was a guest
+    
       // if there are indeed items, use a foreach to add each into the final-carts which now has a userid
-      if (bag.length > 0) {
+     /* if (bag.length > 0) {
+        //use a proper for loop s that the thread is held
+        for (let i = 0; i<bag.length; i++){
+          pool.query(
+            "INSERT INTO final-carts (product_name, product_id, user_id, product_price) VALUES ($1, $2, $3, $4)",
+            [
+              bag[1].product_name,
+              bag[1].product_id,
+              bag[1].user_id,
+              bag[1].product_price,
+            ],
+        }
         bag.forEach((item) => {
           pool.query(
             "INSERT INTO final-carts (product_name, product_id, user_id, product_price) VALUES ($1, $2, $3, $4)",
@@ -42,6 +77,7 @@ const addToCart = (req, res) => {
                 console.log(error);
               }
               console.log("item added");
+              //redirect outside the loop
               res.redirect("/product");
             }
           );
@@ -77,4 +113,4 @@ const addToCart = (req, res) => {
   }
 };
 
-module.export = { addToCart };
+module.export = { addToCart };*/

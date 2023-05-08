@@ -1,0 +1,373 @@
+openapi: 3.0.3
+info:
+  title: Restful E-Commerce API \with Postgres and Node
+  description: An API for managing and using an E-commerce website. Available for
+    educational purposes only
+  termsOfService: Not available yet
+  version: 1.0.0
+servers:
+- url: /
+paths:
+  /products:
+    summary: Get all in-stock products in the e-commerce store
+    description: This path will retrieve an unordered list of all the products available
+      for sale
+    get:
+      tags:
+      - Home
+      summary: 'Get all products '
+      description: This path is used to get all products available on the store. Basic
+        landing page or home page of the store
+      operationId: home
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              examples:
+                products:
+                  value: "[{\"id\":3,\"name\":\"WInter Boots\",\"price\":\"55.34\"\
+                    ,\"gender\":\"FE\",\"details\":\"WOnderful winter booys to keep\
+                    \ your feets warm and cozy\",\"img_link\":\"https://picsum.photos/200/300\"\
+                    }]"
+      x-swagger-router-controller: Home
+  /admin/addproduct:
+    summary: Add a new product to stock
+    description: This path (accessible only by site administrator) is used to add
+      a product to store
+    get:
+      tags:
+      - Add Item
+      summary: Add a product
+      description: Path available only to admin to add a particular product
+      operationId: get_add_item
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                products:
+                  value: "[{\"id\":3,\"name\":\"WInter Boots\",\"price\":\"55.34\"\
+                    ,\"gender\":\"FE\",\"details\":\"WOnderful winter booys to keep\
+                    \ your feets warm and cozy\",\"img_link\":\"https://picsum.photos/200/300\"\
+                    }]"
+        default:
+          description: Success
+      x-swagger-router-controller: AddItem
+    post:
+      tags:
+      - Add Item
+      summary: Add a product
+      description: Path available only to admin to add a particular product
+      operationId: post_add_item
+      requestBody:
+        description: A new product object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/products'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                product:
+                  value: "[{\"id\":3,\"name\":\"WInter Boots\",\"price\":\"55.34\"\
+                    ,\"gender\":\"FE\",\"details\":\"WOnderful winter booys to keep\
+                    \ your feets warm and cozy\",\"img_link\":\"https://picsum.photos/200/300\"\
+                    }]"
+        "400":
+          description: Invalid Argument Provided
+          content:
+            text/plain; charset=utf-8:
+              examples:
+                Error:
+                  value: Invalid Argument
+        default:
+          description: Success
+      x-swagger-router-controller: AddItem
+  /admin/delete/{id}:
+    summary: Delete a particular product
+    description: This path is used by administrator to delete a particular product
+      matching provided id
+    delete:
+      tags:
+      - Delete Product
+      summary: Delete Product
+      description: This path is sued by admin to delete a product
+      operationId: delete_item
+      parameters:
+      - name: id
+        in: path
+        description: The id of the product.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "204":
+          content:
+            application/json:
+              examples:
+                products:
+                  value: "{}"
+        default:
+          description: Default error sample response
+      x-swagger-router-controller: DeleteProduct
+  /admin/update:
+    summary: update stock availability or order status
+    description: This path is used by admin to update the stock availability of existing
+      products or update the status of an order
+    patch:
+      tags:
+      - Update
+      summary: Used to update product stock or inventory or details
+      description: This path is used to update all product related data. Available
+        only to admin
+      operationId: update
+      parameters:
+      - name: id
+        in: path
+        description: The id of the product.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        description: A stock string
+        content:
+          text/plain:
+            schema:
+              type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                "200":
+                  value: "[{\"id\":3,\"name\":\"WInter Boots\",\"price\":\"55.34\"\
+                    ,\"gender\":\"FE\",\"details\":\"WOnderful winter booys to keep\
+                    \ your feets warm and cozy\",\"img_link\":\"https://picsum.photos/200/300\"\
+                    }]"
+        default:
+          description: Default error sample response
+      x-swagger-router-controller: Update
+  /admin/orders:
+    summary: View all orders
+    description: This path is used by administrator to view all orders on the site
+    get:
+      tags:
+      - Orders
+      summary: Get all open orders
+      description: This path is used by admin to get all open orders and all order
+        history and related data
+      operationId: order_history
+      responses:
+        default:
+          description: Default error sample response
+          content:
+            application/json:
+              examples:
+                admin orders:
+                  value: "[{\"id\":3,\"name\":\"WInter Boots\",\"price\":\"55.34\"\
+                    ,\"gender\":\"FE\",\"details\":\"WOnderful winter booys to keep\
+                    \ your feets warm and cozy\",\"img_link\":\"https://picsum.photos/200/300\"\
+                    }]"
+      x-swagger-router-controller: Orders
+    post:
+      tags:
+      - Orders
+      summary: Update order and return status
+      description: Used by admin to update order and return status
+      operationId: post_order
+      responses:
+        "201":
+          content:
+            application/json:
+              examples:
+                odrers:
+                  value: "[{\"id\":3,\"name\":\"WInter Boots\",\"price\":\"55.34\"\
+                    ,\"gender\":\"FE\",\"details\":\"WOnderful winter booys to keep\
+                    \ your feets warm and cozy\",\"img_link\":\"https://picsum.photos/200/300\"\
+                    }]"
+        default:
+          description: Default error sample response
+      x-swagger-router-controller: Orders
+  /orders:
+    summary: Get all order data for user
+    description: This path is used to get all order data by user
+    get:
+      tags:
+      - Orders
+      summary: Gets order data
+      description: Used by the user to retrieve all order related data
+      operationId: get_orders
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                orders:
+                  value: "[{\"id\":3,\"name\":\"WInter Boots\",\"price\":\"55.34\"\
+                    ,\"gender\":\"FE\",\"details\":\"WOnderful winter booys to keep\
+                    \ your feets warm and cozy\",\"img_link\":\"https://picsum.photos/200/300\"\
+                    }]"
+        default:
+          description: Default error sample response
+      x-swagger-router-controller: Orders
+  /orders/return:
+    summary: Used to request a return
+    description: Used by user to request a return for ordered items
+    get:
+      tags:
+      - Orders
+      summary: Get return data
+      description: "This path is used to view all returns, both pending and completed"
+      operationId: get_returns
+      responses:
+        default:
+          description: Default error sample response
+          content:
+            application/json:
+              examples:
+                return:
+                  value: "[{\"id\":3,\"name\":\"WInter Boots\",\"price\":\"55.34\"\
+                    ,\"gender\":\"FE\",\"details\":\"WOnderful winter booys to keep\
+                    \ your feets warm and cozy\",\"img_link\":\"https://picsum.photos/200/300\"\
+                    }]"
+      x-swagger-router-controller: Orders
+  /orders/cancel:
+    summary: used to cancel an order
+    description: Used by user to cancel an order
+    post:
+      tags:
+      - Orders
+      summary: Used to cancel  an order
+      description: This path is used to cancel an order with the selected id
+      operationId: cancel_order
+      responses:
+        default:
+          description: Default error sample response
+          content:
+            application/json:
+              examples:
+                cancel order:
+                  value: "[{\"id\":3,\"name\":\"WInter Boots\",\"price\":\"55.34\"\
+                    ,\"gender\":\"FE\",\"details\":\"WOnderful winter booys to keep\
+                    \ your feets warm and cozy\",\"img_link\":\"https://picsum.photos/200/300\"\
+                    }]"
+      x-swagger-router-controller: Orders
+  /cart/add:
+    summary: Add item to cart
+    description: This Path is used to add items to cart
+    post:
+      tags:
+      - Cart
+      summary: Add Item to Cart
+      description: This path is used to immediately add an item to cart
+      operationId: add_cart
+      responses:
+        default:
+          description: Default error sample response
+          content:
+            application/json:
+              examples:
+                add cart:
+                  value: "[{\"id\":3,\"name\":\"WInter Boots\",\"price\":\"55.34\"\
+                    ,\"gender\":\"FE\",\"details\":\"WOnderful winter booys to keep\
+                    \ your feets warm and cozy\",\"img_link\":\"https://picsum.photos/200/300\"\
+                    }]"
+      x-swagger-router-controller: Cart
+  /cart/remove:
+    summary: Used to remove items from cart
+    description: This path is used to remove an item from cart
+    post:
+      tags:
+      - Cart
+      summary: Remove Item from Cart
+      description: This path is used to immediately remove an item from cart
+      operationId: remove_cart
+      responses:
+        default:
+          description: Default error sample response
+          content:
+            application/json:
+              examples:
+                remove item:
+                  value: "[{\"id\":3,\"name\":\"WInter Boots\",\"price\":\"55.34\"\
+                    ,\"gender\":\"FE\",\"details\":\"WOnderful winter booys to keep\
+                    \ your feets warm and cozy\",\"img_link\":\"https://picsum.photos/200/300\"\
+                    }]"
+      x-swagger-router-controller: Cart
+  /cart/order:
+    summary: Used to place order
+    description: This path is used to Place an order and checkout
+    post:
+      tags:
+      - Checkout
+      summary: Place an order
+      description: This path is used to palce an order and checkout
+      operationId: checkout
+      responses:
+        default:
+          description: Default error sample response
+          content:
+            application/json:
+              examples:
+                checkout:
+                  value: "[{\"id\":3,\"name\":\"WInter Boots\",\"price\":\"55.34\"\
+                    ,\"gender\":\"FE\",\"details\":\"WOnderful winter booys to keep\
+                    \ your feets warm and cozy\",\"img_link\":\"https://picsum.photos/200/300\"\
+                    }]"
+      x-swagger-router-controller: Checkout
+  /profile:
+    summary: Gets user profile data
+    description: This path is used by user to get all user profile data
+    get:
+      tags:
+      - User
+      summary: View all User Profile data
+      description: This path is used by user to get all user profile data
+      operationId: user_profile
+      responses:
+        default:
+          description: Default error sample response
+          content:
+            application/json:
+              examples:
+                user profile:
+                  value: "[{\"id\":3,\"name\":\"WInter Boots\",\"price\":\"55.34\"\
+                    ,\"gender\":\"FE\",\"details\":\"WOnderful winter booys to keep\
+                    \ your feets warm and cozy\",\"img_link\":\"https://picsum.photos/200/300\"\
+                    }]"
+      x-swagger-router-controller: User
+    post:
+      tags:
+      - User
+      summary: Make changes to user data
+      description: This path is used by user to make changes to user profile data
+      operationId: post_user_profile
+      responses:
+        default:
+          description: Default error sample response
+          content:
+            application/json:
+              examples:
+                user profile:
+                  value: "[{\"id\":3,\"name\":\"WInter Boots\",\"price\":\"55.34\"\
+                    ,\"gender\":\"FE\",\"details\":\"WOnderful winter booys to keep\
+                    \ your feets warm and cozy\",\"img_link\":\"https://picsum.photos/200/300\"\
+                    }]"
+      x-swagger-router-controller: User
+components:
+  schemas:
+    order:
+      type: object
+      properties:
+        name:
+          type: string
+        id:
+          type: string

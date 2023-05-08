@@ -15,16 +15,23 @@ const pool = new Pool({
 
 const findByUsername = async (name) => {
   // const username = req.body.username;
-  pool.query(
-    "SELECT * FROM users WHERE username = $1",
-    [name],
-    (error, results) => {
-      if (error) {
-        throw error;
+
+  console.log(name);
+  return new Promise((res, rej) => {
+    pool.query(
+      "SELECT * FROM users WHERE username = $1",
+      [name],
+      (error, results) => {
+        if (error) {
+          rej(error);
+          throw error;
+        }
+        res(results.rows[0]);
+        console.log();
+        //return results.rows[0];
       }
-      return results.rows[0];
-    }
-  );
+    );
+  });
 };
 
 const getUserById = (req, res) => {

@@ -14,10 +14,7 @@ passport.use(
     { usernameField: "username", passwordField: "password" },
     async (username, password, done) => {
       const user = await du.findByUsername(username);
-      // return error if an errors found
-      /*if (err) {
-      return done(err);
-    }*/
+
       // if user does not exist
       if (!user) {
         console.log("user does not exist");
@@ -37,14 +34,14 @@ passport.use(
 );
 
 passport.serializeUser((user, done) => {
-  return done(null, { id: user.id, username: user.username });
+  return done(null, user.id);
 });
 
-passport.deserializeUser((id, done) => {
-  const userD = du.getUserById(id);
-  if (err) return done(err);
+passport.deserializeUser((user, done) => {
+  //const userID = du.getUserById(id);
+  //if (err) return done(err);
 
-  return done(null, userD);
+  return done(null, user);
 });
 
 // ROUTES
