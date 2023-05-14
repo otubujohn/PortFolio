@@ -1,9 +1,10 @@
 <%- include("includes/header") %>
 <form action="/addTodo" method="post">
-  <label for="title">Todo</label>
-  <input type="text" name="title" />
-  <label for="body">Todo Description</label>
-  <textarea name="body" id="body" cols="30" rows="10"></textarea>
+  <label for="todo">Todo</label>
+  <input type="text" name="todo" />
+  <label for="description">Todo Description</label>
+  <textarea name="description" id="body" cols="30" rows="10"></textarea>
+  <input type="date" name="time_limit">
   <button type="submit">Add</button>
 </form>
 <%- include("includes/footer") -%>

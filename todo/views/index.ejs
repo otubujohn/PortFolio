@@ -2,12 +2,12 @@
   <%- include("includes/header") %>
   <main>
     <h2>Your Todos</h2>
-  <% if(todos.length > 0 ){ %>
+  <% if(todos.length > 0){ %>
       <ul>
       <% todos.forEach(item => { %>
         <li><%= item.todo %></li>
         <span><%= item.time_limit  %></span>
-        <form class="" action="/delTodo" method="delete">
+        <form class="" action="/delTodo/:id" method="post">
           <input type="hidden" name="id" value="<%= item.id %>">
           <button type="submit" name="button">Delete</button>
         </form>
