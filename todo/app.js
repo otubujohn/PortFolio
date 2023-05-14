@@ -1,16 +1,17 @@
+require("dotenv").config();
 const express = require("express");
 const router = require("./routes");
-const path = require("path");
+//const path = require("path");
 const bodyParser = require("body-parser");
-bodyParser.urlencoded({ extended: true });
 
 const app = express();
 app.set("view engine", "ejs");
-app.use(bodyParser.json());
 
-app.use(express.static(path.join(__dirname, "public")));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static("public"));
 app.use(router);
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log("server started on " + PORT);
 });

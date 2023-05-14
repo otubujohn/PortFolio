@@ -1,4 +1,4 @@
-<%- include(../include/header) -%>
+<%- include("includes/header") %>
 <form action="/addTodo" method="post">
   <label for="title">Todo</label>
   <input type="text" name="title" />
@@ -6,4 +6,4 @@
   <textarea name="body" id="body" cols="30" rows="10"></textarea>
   <button type="submit">Add</button>
 </form>
-<%- include(../include/footer) -%>
+<%- include("includes/footer") -%>

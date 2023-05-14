@@ -1,6 +1,20 @@
-<%- include("includes/header") %>
-<main>
-  <h2><%= todo %></h2>
-  <p><%= body %></p>
-</main>
-<%- include("includes/footer") %>
+
+  <%- include("includes/header") %>
+  <main>
+    <h2>Your Todos</h2>
+  <% if(todos.length > 0 ){ %>
+      <ul>
+      <% todos.forEach(item => { %>
+        <li><%= item.todo %></li>
+        <span><%= item.time_limit  %></span>
+        <form class="" action="/delTodo" method="delete">
+          <input type="hidden" name="id" value="<%= item.id %>">
+          <button type="submit" name="button">Delete</button>
+        </form>
+      <% }) %>
+      </ul>
+    <% }else{ %>
+      <h2>You are yet to add any todo</h2>
+    <% } %>
+  </main>
+  <%- include("includes/footer") %>
