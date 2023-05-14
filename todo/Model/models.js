@@ -25,13 +25,12 @@ pool.query(query, [id], (error, results)=>{
 
 
 const getAllTodos = ()=>{
-  const query = "SELECT * FROM todo ORDER BY ID ASC";
-  pool.query(query, (error, results)=>{
+  // const query = "SELECT * FROM todo ORDER BY ID ASC";
+  pool.query("SELECT * FROM todo ORDER BY id ASC", (error, results)=>{
     if(error){
-      return new Error("an error has occured");
-    }else{
-      return results.rows;
+      throw new Error("an error has occured");
     }
+      return results.rows;
   })
 }
 
